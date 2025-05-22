@@ -129,9 +129,14 @@ export class AppState extends Model<IAppState> {
     formErrors: FormErrors = {};
 
 
-    clearBasket() {
-// очищает корзину
-    }
+
+  async loadCatalog() {
+// Загрузка каталога товаров
+  }
+
+    addItem(id: string) {
+// Добавляет товар в корзину 
+    } 
 
     removeItem(id: string) {
 // Удаляет товар из корзины
@@ -139,10 +144,6 @@ export class AppState extends Model<IAppState> {
 
     getTotal() {
 // расчитывает общую сумму заказа
-    }
-
-    setCatalog(items: IShopItem[]) {
-// добавляет товары в каталог
     }
 
     setPreview(item: IShopItem) {
@@ -154,9 +155,206 @@ export class AppState extends Model<IAppState> {
 // обновляет значение конкретного поля в объекте заказа и проверяет валидность всего заказа и при успешной проверке генерирует событие
     }
 
+    async checkout(orderData: IOrderForm & IOrderPayment) {
+// Оформление заказа
+  }
+
     validateOrder() {
 // валидирует поля формы
 }
 
 }
 
+Класс ShopAPI для управляет данными из Api 
+
+class ShopAPI extends Api implements IShopAPI {
+    constructor(cdn: string, baseUrl: string, options?: RequestInit) {
+        super(baseUrl, options);
+        this.cdn = cdn;
+    }
+
+
+    getItemList(): Promise<IShopItem[]> {
+// Получает список товаров
+    }
+
+    orderLots(order: IOrder): Promise<IOrderResult> {
+// Отправляет сообщение об успешном оформлении товара
+    }
+
+}
+
+Класс Card управляет элементами карточки товара
+
+class Card<T> extends Component<ICard<T>> {
+    protected _title: HTMLElement;
+    protected _image?: HTMLImageElement;
+    protected _description?: HTMLElement;
+    protected _button?: HTMLButtonElement;
+
+    constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
+
+    }
+
+    set id(value: string) {
+
+    }
+
+    get id(): string {
+
+    }
+
+    set title(value: string) {
+
+    }
+
+    get title(): string {
+
+    }
+
+    set image(value: string) {
+
+    }
+
+    set description(value: string | string[]) {
+
+    }
+}
+
+Класс Order выступает в роли контроллера для заказов
+
+class Order extends Form<IOrderForm> {
+    constructor(container: HTMLFormElement, events: IEvents) {
+        super(container, events);
+    }
+
+    set phone(value: string) {
+
+    }
+
+    set email(value: string) {
+
+    }
+
+    set paymentMethod(value: 'card' | 'cash' | null) {
+
+    }
+
+    set address(value: string) {
+
+    }
+}
+
+Класс Page управляет основным интерфейсом страницы 
+
+class Page extends Component<IPage> {
+    protected _counter: HTMLElement;
+    protected _catalog: HTMLElement;
+    protected _wrapper: HTMLElement;
+    protected _basket: HTMLElement;
+
+
+    constructor(container: HTMLElement, protected events: IEvents) {
+
+    }
+
+    set counter(value: number) {
+
+    }
+
+    set catalog(items: HTMLElement[]) {
+
+    }
+
+    set locked(value: boolean) {
+
+    }
+}
+
+Класс Basket управляет отображением корзины
+
+class Basket extends Component<IBasketView> {
+    protected _list: HTMLElement;
+    protected _total: HTMLElement;
+    protected _button: HTMLElement;
+
+    constructor(container: HTMLElement, protected events: EventEmitter) {
+
+    }
+
+    set items(items: HTMLElement[]) {
+
+    }
+
+    set selected(items: string[]) {
+
+    }
+
+    set total(total: number) {
+
+    }
+}
+
+Класс Form реализует компонент для работы с формами 
+
+class Form<T> extends Component<IFormState> {
+    protected _submit: HTMLButtonElement;
+    protected _errors: HTMLElement;
+
+    constructor(protected container: HTMLFormElement, protected events: IEvents) {
+
+    }
+
+    protected onInputChange(field: keyof T, value: string) {
+
+    }
+
+    set valid(value: boolean) {
+
+    }
+
+    set errors(value: string) {
+
+    }
+
+    render(state: Partial<T> & IFormState) {
+
+    }
+}
+
+Кдасс Modal реализует компонент модального окна 
+
+class Modal extends Component<IModalData> {
+    protected _closeButton: HTMLButtonElement;
+    protected _content: HTMLElement;
+
+    constructor(container: HTMLElement, protected events: IEvents) {
+
+    }
+
+    set content(value: HTMLElement) {
+
+    }
+
+    open() {
+
+    }
+
+    close() {
+
+    }
+
+    render(data: IModalData): HTMLElement {
+
+    }
+}
+
+Класс Success реализует компонент для отображения уведомления об успешной оплате
+
+class Success extends Component<ISuccess> {
+    protected _close: HTMLElement;
+
+    constructor(container: HTMLElement, actions: ISuccessActions) {
+
+    }
+}

@@ -41,3 +41,52 @@ export interface IOrderPayment {
     paymentMethod: 'card' | 'cash' | null;
     adress: string;
 }
+
+export type orderData = IOrderForm & IOrderPayment;
+
+export interface IShopAPI {
+    getItemList: () => Promise<IShopItem[]>;
+    orderItems: (order: IOrder) => Promise<IOrderResult>;
+}
+
+export interface ICard<T> {
+    title: string;
+    description?: string | string[];
+    image: string;
+}
+
+export interface IPage {
+    counter: number;
+    catalog: HTMLElement[];
+    locked: boolean;
+}
+
+export interface IBasketView {
+    items: HTMLElement[];
+    total: number;
+    selected: string[];
+}
+
+export interface IFormState {
+    valid: boolean;
+    errors: string[];
+}
+
+export interface IModalData {
+    content: HTMLElement;
+}
+
+export interface ISuccess {
+    total: number;
+}
+
+export interface ISuccessActions {
+    onClick: () => void;
+}
+
+export type TabState = {
+    selected: string
+};
+export type TabActions = {
+    onClick: (tab: string) => void
+}

@@ -1,5 +1,3 @@
-
-
 export interface IShopItem {
     id: string;
     image: string;
@@ -7,6 +5,7 @@ export interface IShopItem {
     title: string;
     about: string;
     price: number;
+    description?: string;
 }
 
 export type IBasketItem = Pick<IShopItem, 'id' | 'title' | 'price'>;
@@ -36,4 +35,9 @@ export interface IBid {
 
 export interface IOrderResult {
     id: string;
+}
+
+export interface IOrderPayment {
+    paymentMethod: 'card' | 'cash' | null;
+    adress: string;
 }

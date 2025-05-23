@@ -8,8 +8,6 @@ export interface IShopItem {
     description?: string;
 }
 
-export type IBasketItem = Pick<IShopItem, 'id' | 'title' | 'price'>;
-
 export interface IAppState {
     catalog: IShopItem[];
     basket: string[];
@@ -39,7 +37,7 @@ export interface IOrderResult {
 
 export interface IOrderPayment {
     paymentMethod: 'card' | 'cash' | null;
-    adress: string;
+    address: string;
 }
 
 export type orderData = IOrderForm & IOrderPayment;
@@ -67,6 +65,13 @@ export interface IBasketView {
     selected: string[];
 }
 
+export interface IBasketItem {
+    index: HTMLElement;
+    title: HTMLElement;
+    price: HTMLElement;
+    deleteButton: HTMLButtonElement;
+}
+
 export interface IFormState {
     valid: boolean;
     errors: string[];
@@ -87,6 +92,14 @@ export interface ISuccessActions {
 export type TabState = {
     selected: string
 };
+
 export type TabActions = {
     onClick: (tab: string) => void
+}
+
+export interface ProductDetails {
+    image: HTMLImageElement;
+    title: HTMLElement;
+    description: HTMLElement;
+    addButton: HTMLButtonElement;
 }

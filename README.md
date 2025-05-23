@@ -60,301 +60,255 @@ yarn build
 Абстрактный класс Component отвечает за отображение элементов на странице
 
 export abstract class Component<T> {
-    protected constructor(protected readonly container: HTMLElement) {
-        
-    }
+    protected constructor(protected readonly container: HTMLElement) {}
 
     // Инструментарий для работы с DOM в дочерних компонентах
 
     // Переключить класс
-    toggleClass(element: HTMLElement, className: string, force?: boolean) {
-
-    }
+    toggleClass(element: HTMLElement, className: string, force?: boolean) {}
 
     // Установить текстовое содержимое
-    protected setText(element: HTMLElement, value: unknown) {
-
-    }
+    protected setText(element: HTMLElement, value: unknown) {}
 
     // Сменить статус блокировки
-    setDisabled(element: HTMLElement, state: boolean) {
-
-    }
+    setDisabled(element: HTMLElement, state: boolean) {}
 
     // Скрыть
-    protected setHidden(element: HTMLElement) {
-
-    }
+    protected setHidden(element: HTMLElement) {}
 
     // Показать
-    protected setVisible(element: HTMLElement) {
-
-    }
+    protected setVisible(element: HTMLElement) {}
 
     // Установить изображение с алтернативным текстом
-    protected setImage(element: HTMLImageElement, src: string, alt?: string) {
-    }
+    protected setImage(element: HTMLImageElement, src: string, alt?: string) {}
 
     // Вернуть корневой DOM-элемент
-    render(data?: Partial<T>): HTMLElement {
-    }
+    render(data?: Partial<T>): HTMLElement {}
 }
 
 Абстрактный класс для описания модели Model
 
 export abstract class Model<T> {
-    constructor(data: Partial<T>, protected events: IEvents) {
-
-    }
+    constructor(data: Partial<T>, protected events: IEvents) {}
 
     // Сообщить всем что модель поменялась
-    emitChanges(event: string, payload?: object) {
-        // Состав данных можно модифицировать
-
-    }
+    emitChanges(event: string, payload?: object) { // Состав данных можно модифицировать }
 }
 
 Класс с общими параметрами модели данных AppState
 
 export class AppState extends Model<IAppState> {
-    basket: string[];
     catalog: IShopItem[];
+    basket: string[] = [];
     loading: boolean;
     order: IOrder = {
         email: '',
-        phone: '',
-        items: []
+        phone: ''
     };
     preview: string | null;
     formErrors: FormErrors = {};
 
 
+    addItem(id: string) { // Добавляет товар в корзину } 
 
-  async loadCatalog() {
-// Загрузка каталога товаров
-  }
+    removeItem(id: string) { // Удаляет товар из корзины }
 
-    addItem(id: string) {
-// Добавляет товар в корзину 
-    } 
+    getTotal() { // расчитывает общую сумму заказа }
 
-    removeItem(id: string) {
-// Удаляет товар из корзины
-    }
-
-    getTotal() {
-// расчитывает общую сумму заказа
-    }
-
-    setPreview(item: IShopItem) {
-// устанавливает товар для предпросмотра в модальном окне
-    }
+    setPreview(item: IShopItem) { // устанавливает товар для предпросмотра в модальном окне }
 
 
     setOrderField(field: keyof IOrderForm, value: string) {
 // обновляет значение конкретного поля в объекте заказа и проверяет валидность всего заказа и при успешной проверке генерирует событие
     }
 
-    async checkout(orderData: IOrderForm & IOrderPayment) {
-// Оформление заказа
-  }
-
-    validateOrder() {
-// валидирует поля формы
-}
+    validateOrder() { // валидирует поля формы }
 
 }
+
 
 Класс ShopAPI для управляет данными из Api 
 
-class ShopAPI extends Api implements IShopAPI {
-    constructor(cdn: string, baseUrl: string, options?: RequestInit) {
-        super(baseUrl, options);
-        this.cdn = cdn;
-    }
+Методы:
+
+getItemList — загружает список товаров
+
+orderLots — отправляет данные заказа
 
 
-    getItemList(): Promise<IShopItem[]> {
-// Получает список товаров
-    }
 
-    orderLots(order: IOrder): Promise<IOrderResult> {
-// Отправляет сообщение об успешном оформлении товара
-    }
+Класс Card для отображения карточки товара в каталоге
 
-}
+Поля:
 
-Класс Card управляет элементами карточки товара
+_title — заголовок карточки
 
-class Card<T> extends Component<ICard<T>> {
-    protected _title: HTMLElement;
-    protected _image?: HTMLImageElement;
-    protected _description?: HTMLElement;
-    protected _button?: HTMLButtonElement;
+_image — изображение товара
 
-    constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
+_description — описание товара
 
-    }
+_button — кнопка добавления в корзину
 
-    set id(value: string) {
+Методы:
 
-    }
+id — уникальный идентификатор товара
 
-    get id(): string {
+title — устанавливает название товара
 
-    }
+image — задает изображение товара
 
-    set title(value: string) {
-
-    }
-
-    get title(): string {
-
-    }
-
-    set image(value: string) {
-
-    }
-
-    set description(value: string | string[]) {
-
-    }
-}
-
-Класс Order выступает в роли контроллера для заказов
-
-class Order extends Form<IOrderForm> {
-    constructor(container: HTMLFormElement, events: IEvents) {
-        super(container, events);
-    }
-
-    set phone(value: string) {
-
-    }
-
-    set email(value: string) {
-
-    }
-
-    set paymentMethod(value: 'card' | 'cash' | null) {
-
-    }
-
-    set address(value: string) {
-
-    }
-}
-
-Класс Page управляет основным интерфейсом страницы 
-
-class Page extends Component<IPage> {
-    protected _counter: HTMLElement;
-    protected _catalog: HTMLElement;
-    protected _wrapper: HTMLElement;
-    protected _basket: HTMLElement;
+description — отображает описание товара
 
 
-    constructor(container: HTMLElement, protected events: IEvents) {
 
-    }
+Класс OrderAddressForm реализует форму ввода адреса доставки
+Методы: 
 
-    set counter(value: number) {
+address — ввод адреса 
 
-    }
+paymentMethod - выбор способа оплаты
 
-    set catalog(items: HTMLElement[]) {
 
-    }
 
-    set locked(value: boolean) {
+Класс OrderContactsForm реализует форму ввода контактов
+Методы:
 
-    }
-}
+email — ввод электронной почты
+
+phone — ввод номера телефона
+
+
+
+Класс Page управляет основным интерфейсом страницы
+Поля:
+
+_counter — счетчик товаров в корзине
+
+_catalog — каталог товаров
+
+_wrapper — блокировка интерфейса при загрузке
+
+_basket —  корзина
+
+Методы:
+
+counter — обновляет счетчик товаров
+
+locked — блокирует взаимодействие с интерфейсом
+
+
 
 Класс Basket управляет отображением корзины
 
-class Basket extends Component<IBasketView> {
-    protected _list: HTMLElement;
-    protected _total: HTMLElement;
-    protected _button: HTMLElement;
+Поля: 
 
-    constructor(container: HTMLElement, protected events: EventEmitter) {
+list - список товаров в корзине
 
-    }
+total - общая сумма товаров
 
-    set items(items: HTMLElement[]) {
+button - кнопка  оформить заказ
 
-    }
+Методы:
 
-    set selected(items: string[]) {
+items - получает список товаров
 
-    }
+total - устанавливает общую сумму заказа
 
-    set total(total: number) {
 
-    }
-}
+Класс BasketItem реализует элемент списка товаров в корзине
+Поля:
+
+_index — порядковый номер товара
+
+_title — название товара
+
+_price — цена товара
+
+_deleteButton — кнопка удаления из корзины
+
+Методы:
+
+index — устанавливает позицию в списке
+
+title — задает название товара
+
+price — отображает цену товара
+
+
 
 Класс Form реализует компонент для работы с формами 
 
-class Form<T> extends Component<IFormState> {
-    protected _submit: HTMLButtonElement;
-    protected _errors: HTMLElement;
+Поля:
 
-    constructor(protected container: HTMLFormElement, protected events: IEvents) {
+_submit — кнопка отправки формы
 
-    }
+_errors — блок отображения ошибок
 
-    protected onInputChange(field: keyof T, value: string) {
+Методы:
 
-    }
+valid — блокирует/разблокирует кнопку отправки
 
-    set valid(value: boolean) {
+errors — показывает сообщения об ошибках
 
-    }
 
-    set errors(value: string) {
-
-    }
-
-    render(state: Partial<T> & IFormState) {
-
-    }
-}
 
 Кдасс Modal реализует компонент модального окна 
 
-class Modal extends Component<IModalData> {
-    protected _closeButton: HTMLButtonElement;
-    protected _content: HTMLElement;
+Поля:
 
-    constructor(container: HTMLElement, protected events: IEvents) {
+_closeButton — кнопка закрытия окна
 
-    }
+_content — содержимое модалки
 
-    set content(value: HTMLElement) {
+Методы:
 
-    }
+open — открывает окно
 
-    open() {
+close — закрывает окно
 
-    }
+content — устанавливает содержимое
 
-    close() {
 
-    }
-
-    render(data: IModalData): HTMLElement {
-
-    }
-}
 
 Класс Success реализует компонент для отображения уведомления об успешной оплате
 
-class Success extends Component<ISuccess> {
-    protected _close: HTMLElement;
+Поля:
 
-    constructor(container: HTMLElement, actions: ISuccessActions) {
+_close — кнопка закрытия
 
-    }
-}
+_total — отображение суммы заказа
+
+Методы:
+
+total — устанавливает итоговую сумму
+
+
+Класс ProductDetails реализует модальное окно с деталями товара
+Поля:
+
+_image — изображение товара
+
+_title — заголовок товара
+
+_description — полное описание
+
+_addButton — кнопка добавления в корзину
+
+Методы:
+
+image — устанавливает изображение
+
+title — задает название
+
+description — отображает описание
+
+Список событий, реализующий связь между слоями модели и представления:
+
+items:changed - изменились элементы каталога
+order:open - открытие формы заказа
+order:submit - отправлена форма заказа
+formErrors:change - изменилось состояние валидации формы
+/^order\..*:change/ - изменилось одно из полей
+preview:changed - изменился открытый выбранный товар
+modal:open - блокировка прокрутки страницы если открыта модалка
+modal:close - разблокировка прокрутки страницы если открыта модалка

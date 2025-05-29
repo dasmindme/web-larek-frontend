@@ -11,9 +11,11 @@ export interface IShopItem {
 export interface IAppState {
     catalog: IShopItem[];
     basket: string[];
-    preview: string | null;
-    order: IOrder | null;
     loading: boolean;
+    contacts: IOrderForm;
+    order: IOrderFormPayment;
+    preview: string | null;
+    formErrors: FormErrors;
 }
 
 export interface IOrderForm {
@@ -25,7 +27,7 @@ export interface IOrder extends IOrderForm {
     items: string[]
 }
 
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
+export type FormErrors = Partial<Record<keyof (IOrderForm & IOrderFormPayment), string>>;
 
 export interface IBid {
     price: number
@@ -35,12 +37,14 @@ export interface IOrderResult {
     id: string;
 }
 
-export interface IOrderPayment {
-    paymentMethod: 'card' | 'cash' | null;
+export type PaymentMethod = 'card' | 'cash' | '';
+
+export interface IOrderFormPayment {
     address: string;
+    paymentMethod: PaymentMethod; // Используем новый тип
 }
 
-export type orderData = IOrderForm & IOrderPayment;
+export type IOrderData = IOrderForm & IOrderFormPayment;
 
 export interface IShopAPI {
     getItemList: () => Promise<IShopItem[]>;
@@ -62,13 +66,12 @@ export interface IPage {
 export interface IBasketView {
     items: HTMLElement[];
     total: number;
-    selected: string[];
 }
 
 export interface IBasketItem {
-    index: HTMLElement;
-    title: HTMLElement;
-    price: HTMLElement;
+    index: number;
+    title: string;
+    price: number;
     deleteButton: HTMLButtonElement;
 }
 
@@ -97,9 +100,11 @@ export type TabActions = {
     onClick: (tab: string) => void
 }
 
-export interface ProductDetails {
+export interface IProductDetails {
     image: HTMLImageElement;
     title: HTMLElement;
     description: HTMLElement;
-    addButton: HTMLButtonElement;
+    price: HTMLElement;
+    button: HTMLButtonElement;
+    render: HTMLElement;
 }

@@ -1,0 +1,32 @@
+import { Form } from "./common/Form";
+import {IOrderForm, IOrderFormPayment} from "../types";
+import {EventEmitter, IEvents} from "./base/events";
+import {ensureElement} from "../utils/utils";
+
+export class OrderContactsForm extends Form<IOrderForm> {
+    constructor(container: HTMLFormElement, events: IEvents) {
+        super(container, events);
+    }
+
+    set phone(value: string) {
+        (this.container.elements.namedItem('phone') as HTMLInputElement).value = value;
+    }
+
+    set email(value: string) {
+        (this.container.elements.namedItem('email') as HTMLInputElement).value = value;
+    }
+}
+
+export class OrderAddressForm extends Form<IOrderFormPayment> {
+    constructor(container: HTMLFormElement, events: IEvents) {
+        super(container, events);
+    }
+
+    set address(value: string) {
+        (this.container.elements.namedItem('address') as HTMLInputElement).value = value;
+    }
+
+    set paymentMethod(value: string) {
+        (this.container.elements.namedItem('payment') as HTMLInputElement).value = value;
+    }
+}

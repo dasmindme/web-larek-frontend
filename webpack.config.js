@@ -74,6 +74,9 @@ const config = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js", "..."],
+    fallback: {
+      "intl": require.resolve("intl")
+    }
   },
   optimization: {
     minimize: true,

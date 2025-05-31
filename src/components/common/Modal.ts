@@ -26,7 +26,7 @@ export class Modal extends Component<IModalData> {
         if (value) {
             this._content.replaceChildren(value);
         } else {
-            this._content.innerHTML = ''; // Очищаем контент
+            this._content.innerHTML = '';
         }
     }
 

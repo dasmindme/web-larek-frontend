@@ -113,16 +113,21 @@ export class AppState extends Model<IAppState> {
 
     removeItem(id: string) { // Удаляет товар из корзины }
 
+    clearBasket() { //Очищает корзину }
+
     getTotal() { // расчитывает общую сумму заказа }
 
     setPreview(item: IShopItem) { // устанавливает товар для предпросмотра в модальном окне }
 
+    setCatalog(items: IShopItem[]) { // устанавливает товары в каталоге }
 
-    setOrderField(field: keyof IOrderForm, value: string) {
-// обновляет значение конкретного поля в объекте заказа и проверяет валидность всего заказа и при успешной проверке генерирует событие
-    }
+    setOrderField(field: keyof (IOrderData), value: string) { //устанавливает значения для форм }
 
-    validateOrder() { // валидирует поля формы }
+    validateOrderForm() { // валидирует форму с адресом }
+
+    validateContacts() { // валидирует форму с контактами }
+
+    clearOrder() { // очищает форму }
 
 }
 
@@ -131,9 +136,11 @@ export class AppState extends Model<IAppState> {
 
 Методы:
 
+getShopItem - загружает товар
+
 getItemList — загружает список товаров
 
-orderLots — отправляет данные заказа
+orderItems — отправляет данные заказа
 
 
 
@@ -141,36 +148,64 @@ orderLots — отправляет данные заказа
 
 Поля:
 
-_title — заголовок карточки
+protected _title — заголовок карточки
+protected _image? — изображение товара
+protected _description? — описание товара
+protected _price? - цена товара
+protected _category? - категория товара
+protected _button? — кнопка добавления в корзину
 
-_image — изображение товара
-
-_description — описание товара
-
-_button — кнопка добавления в корзину
 
 Методы:
 
-id — уникальный идентификатор товара
+set category
 
-title — устанавливает название товара
+get category
 
-image — задает изображение товара
+set id
 
-description — отображает описание товара
+get id
+
+set title
+
+get title
+
+set image
+
+set description
+
+set price
+
+get price
+
+set buttonState
 
 
 
 Класс OrderAddressForm реализует форму ввода адреса доставки
+
+Поля:
+
+_address - адресс
+
+_paymentMethodCard - способ оплаты безнал
+
+_paymentMethodCash - способ оплаты нал
+
 Методы: 
 
-address — ввод адреса 
+set address — ввод адреса 
 
-paymentMethod - выбор способа оплаты
-
+set paymentMethod - устанавливает способ оплаты
 
 
 Класс OrderContactsForm реализует форму ввода контактов
+
+Поля:
+
+_email - почта
+_phone - телефон
+
 Методы:
 
 email — ввод электронной почты
@@ -282,25 +317,6 @@ _total — отображение суммы заказа
 
 total — устанавливает итоговую сумму
 
-
-Класс ProductDetails реализует модальное окно с деталями товара
-Поля:
-
-_image — изображение товара
-
-_title — заголовок товара
-
-_description — полное описание
-
-_addButton — кнопка добавления в корзину
-
-Методы:
-
-image — устанавливает изображение
-
-title — задает название
-
-description — отображает описание
 
 Список событий, реализующий связь между слоями модели и представления:
 

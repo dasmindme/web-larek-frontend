@@ -1,8 +1,11 @@
 import {Model} from "./base/Model";
-import {FormErrors, IAppState, IBasketItem, IShopItem, IOrderForm, IOrderFormPayment, IOrderData, PaymentMethod} from "../types";
+import {FormErrors, IAppState, IShopItem, IOrderForm, IOrderFormPayment, IOrderData, PaymentMethod} from "../types";
+
+export const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+export const TEL_REGEXP = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im;
 
 export class AppState extends Model<IAppState> { 
-    catalog: IShopItem[]; 
+    catalog: IShopItem[] = []; 
     basket: string[] = []; 
     loading: boolean = false; 
     contacts: IOrderForm = { email: '', phone: '' };
@@ -20,6 +23,11 @@ removeItem(id: string) {
     this.emitChanges('basket:changed');
 }
 
+clearBasket() {
+    this.basket = [];
+    this.events.emit('basket:changed');
+}
+
 getTotal() {
     return this.basket.reduce((total, id) => {
         const item = this.catalog.find(item => item.id === id);
@@ -29,7 +37,6 @@ getTotal() {
 
 setCatalog(items: IShopItem[]) {
     this.catalog = items;
-    this.preview = null;
     this.emitChanges('catalog:changed', { catalog: this.catalog });
 }
 
@@ -38,35 +45,20 @@ setPreview(item: IShopItem) {
     this.emitChanges('preview:changed', item);
 }
 
-
-setOrderField(field: keyof (IOrderForm & IOrderFormPayment), value: string) {
-    if (field in this.contacts) {
-        this.contacts[field as keyof IOrderForm] = value;
-    } else if (field in this.order) {
-        // Специальная обработка для paymentMethod
-        if (field === 'paymentMethod') {
-            // Проверяем допустимые значения
-            if (value === 'card' || value === 'cash' || value === '') {
-                this.order.paymentMethod = value as PaymentMethod;
-            } else {
-                // Обработка недопустимого значения
-                console.warn(`Недопустимый способ оплаты: ${value}`);
-                this.order.paymentMethod = '';
-            }
-        }
+setOrderField(field: keyof (IOrderData), value: string) {
+    if (field === 'paymentMethod') {
+        this.order.paymentMethod = value as PaymentMethod; 
+    } else {
+        this.order[field as 'address'] = value;
     }
-    
-    this.validateOrder();
-}
+    }
 
-validateOrder() {
+    setContactsField(field: keyof IOrderForm, value: string) {
+        this.contacts[field] = value;
+    }
+
+validateOrderForm() {
     const errors: typeof this.formErrors = {};
-        if (!this.contacts.email) {
-            errors.email = 'Необходимо указать email';
-        }
-        if (!this.contacts.phone) {
-            errors.phone = 'Необходимо указать телефон';
-        }
         if (!this.order.address) {
             errors.address = 'Необходимо указать адрес';
         }
@@ -77,6 +69,35 @@ validateOrder() {
         
         this.formErrors = errors;
         this.events.emit('formErrors:change', this.formErrors);
+        
         return Object.keys(errors).length === 0;
  }
+
+ validateContacts() {
+    const errors: typeof this.formErrors = {};
+    if (!this.contacts.email) {
+        errors.email = 'Необходимо указать email';
+    } else if (!EMAIL_REGEXP.test(this.contacts.email)) {
+        errors.email = 'Неправильно указан email';
+    }
+    if (!this.contacts.phone) {
+        errors.phone = 'Необходимо указать телефон';
+    } else if (!TEL_REGEXP.test(this.contacts.phone)) {
+        errors.phone = 'Неправильно указан телефон';
+    }
+    this.formErrors = errors;
+    this.events.emit('contactsFormErrors:change', this.formErrors);
+    return Object.keys(errors).length === 0;
+}
+
+ clearOrder() {
+    this.contacts = {
+        email: '',
+        phone: '',
+    }
+    this.order = {
+        address: '',
+        paymentMethod: 'card',
+    };
+}
 }

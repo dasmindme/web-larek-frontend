@@ -29,22 +29,19 @@ export interface IOrder extends IOrderForm {
 
 export type FormErrors = Partial<Record<keyof (IOrderForm & IOrderFormPayment), string>>;
 
-export interface IBid {
-    price: number
-}
-
 export interface IOrderResult {
     id: string;
+    total: number;
 }
 
-export type PaymentMethod = 'card' | 'cash' | '';
+export type PaymentMethod = 'card' | 'cash';
 
 export interface IOrderFormPayment {
     address: string;
-    paymentMethod: PaymentMethod; // Используем новый тип
+    paymentMethod: PaymentMethod;
 }
 
-export type IOrderData = IOrderForm & IOrderFormPayment;
+export type IOrderData = IOrderForm & IOrderFormPayment & IOrder;
 
 export interface IShopAPI {
     getItemList: () => Promise<IShopItem[]>;
@@ -90,21 +87,4 @@ export interface ISuccess {
 
 export interface ISuccessActions {
     onClick: () => void;
-}
-
-export type TabState = {
-    selected: string
-};
-
-export type TabActions = {
-    onClick: (tab: string) => void
-}
-
-export interface IProductDetails {
-    image: HTMLImageElement;
-    title: HTMLElement;
-    description: HTMLElement;
-    price: HTMLElement;
-    button: HTMLButtonElement;
-    render: HTMLElement;
 }

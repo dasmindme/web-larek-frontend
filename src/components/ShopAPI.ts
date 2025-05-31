@@ -9,14 +9,23 @@ export class ShopAPI extends Api implements IShopAPI {
         this.cdn = cdn;
     }
 
-        getItemList(): Promise<IShopItem[]> {
-        return this.get('/product').then((data: ApiListResponse<IShopItem>) =>
-            data.items.map((item) => ({
+    getShopItem(id: string): Promise<IShopItem> {
+        return this.get(`/product/${id}`).then(
+            (item: IShopItem) => ({
                 ...item,
-                image: this.cdn + item.image
-            }))
+                image: this.cdn + item.image,
+            })
         );
     }
+
+    getItemList(): Promise<IShopItem[]> {
+    return this.get('/product').then((data: ApiListResponse<IShopItem>) =>
+        data.items.map((item) => ({
+            ...item,
+            image: this.cdn + item.image
+        }))
+    );
+}
 
     orderItems(order: IOrder): Promise<IOrderResult> {
         return this.post('/order', order).then(

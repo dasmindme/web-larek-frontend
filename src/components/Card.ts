@@ -11,6 +11,7 @@ export interface ICard<T> {
     price: number;
     image: string;
     category: string;
+    disabled?: boolean;
 }
 
 export class Card<T> extends Component<ICard<T>> {
@@ -91,20 +92,14 @@ export class Card<T> extends Component<ICard<T>> {
         this.setText(this._description, value);
     }
 
-    set price(value: string) {
-		this.setText(this._price, value ? `${value} синапсов` : 'Бесценно');
-		if (this._button) {
-			this._button.disabled = !value;
-		}
-	}
-
-    get price(): string {
-		return this._price.textContent || '';
-	}
-
-    set buttonState(state: {disabled: boolean }) {
+    set price(value: number) {
+        this.setText(this._price, value ? `${value} синапсов` : 'Бесценно');
         if (this._button) {
-            this._button.disabled = state.disabled;
+            this._button.disabled = !value || value <= 0;
         }
+    }
+
+    get priceText(): string {
+        return this._price?.textContent || '';
     }
 }

@@ -63,25 +63,11 @@ events.on<IShopItem>('catalog:changed', () => {
 events.on('basket:changed', () => {
     // Обновление счетчика
     page.counter = appData.basket.length;
-    
-    // Обновление корзины
     basket.items = appData.basket.map((id) => {
-    const item = appData.catalog.find(item => item.id === id);
-    const basketItem = new BasketItem(cloneTemplate(cardBasketTemplate), {
-        onClick: () => appData.removeItem(id)
+        const item = appData.catalog.find(item => item.id === id);
+        const basketItem = new BasketItem(cloneTemplate(cardBasketTemplate), { onClick: () => appData.removeItem(id) });
+        return basketItem.render(item);
     });
-        
-        return basketItem.render(
-            item
-        );
-    });
-
-    if (appData.preview && appData.basket.includes(appData.preview)) {
-        const item = appData.catalog.find(item => item.id === appData.preview);
-        if (item) {
-            events.emit('preview:changed', item);
-        }
-    }
     basket.total = appData.getTotal();
 });
 
@@ -177,13 +163,10 @@ events.on('preview:changed', (item: IShopItem) => {
       description: item.description,
       image: item.image,
       category: item.category,
-      price: item.price
+      price: item.price,
+      disabled: !item.price || item.price <= 0
     })
   });
-
-  preview.buttonState = {
-    disabled: hasItemInBasket
-};
 });
 
 
@@ -212,7 +195,7 @@ events.on('contacts:submit', () => {
         total: appData.getTotal(),
         items: appData.basket
     };
-    
+
     api.orderItems(orderData)
         .then((data: IOrderResult) => {
             success.total = data.total;

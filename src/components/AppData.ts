@@ -1,8 +1,6 @@
 import {Model} from "./base/Model";
 import {FormErrors, IAppState, IShopItem, IOrderForm, IOrderFormPayment, IOrderData, PaymentMethod} from "../types";
-
-export const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
-export const TEL_REGEXP = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im;
+import { EMAIL_REGEXP, TEL_REGEXP } from "../utils/constants";
 
 export class AppState extends Model<IAppState> { 
     catalog: IShopItem[] = []; 
@@ -13,7 +11,11 @@ export class AppState extends Model<IAppState> {
     preview: string | null; 
     formErrors: FormErrors = {};
 
-addItem(id: string) { 
+addItem(id: string) {
+    const item = this.catalog.find(item => item.id === id); 
+    if (!item || !item.price || item.price <= 0) {
+        return;
+    }
     this.basket.push(id);
     this.emitChanges('basket:changed');
 } 
